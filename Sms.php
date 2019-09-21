@@ -1,18 +1,18 @@
 <?php
 $sms=new Sms();
-var_dump($sms->sendSms('19876926582', '123456'));
+var_dump($sms->sendSms('19876926582', '{"code":"1234"}'));
 class Sms
 {
 	
-	public $config=array('appId'=>'LTAI4Fco','appKey'=>'ebFsqrmtdd','tplId'=>'SMS_174580608','signName'=>'销量联盟');
+	public $config=array('appId'=>'oUU13b1Mo','appKey'=>'ebFsdd','tplId'=>'SMS_174580608','signName'=>'销量联盟');
     /**
      * 发送短信
      * @param $mobile 手机号
-     * @param $code 验证码
+     * @param $TemplateParam  str      '{"code":"1234"}'
      *
      * @return mixed
      */
-    public function sendSms($mobile, $code)
+    public function sendSms($mobile, $TemplateParam)
     {
         // 获取配置信息
         $config = $this->config;
@@ -29,7 +29,7 @@ class Sms
             'TemplateCode' => $config['tplId'],
             'PhoneNumbers' => $mobile,
             // 营销短信无需 TemplateParam 参数
-            'TemplateParam' => '{"code":"' . $code . '"}'
+            'TemplateParam' => $TemplateParam //'{"code":"' . $code . '"}'
         );
 
         // 计算签名并把签名结果加入请求参数
@@ -46,9 +46,9 @@ class Sms
         curl_setopt($ch, CURLOPT_TIMEOUT, 10);
         $result = curl_exec($ch);
         curl_close($ch);
-
-        //返回请求结果
-        return $result;
+		$result=json_decode($result,true);
+		return $result['Code']=='OK'?  true : false;
+        //return $result;
     }
 
     /**
